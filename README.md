@@ -1,87 +1,98 @@
-# Machine Learning — Regresi Logistik Biner (Python Streamlit)
+# Machine Learning: Regresi Logistik Biner — Versi 3
 
-**Studi kasus:** Prediksi keputusan nasabah berlangganan deposito berjangka.  
-**Data:** 1.000 nasabah **simulasi**, seluruh variabel dalam Bahasa Indonesia.
+**Aplikasi Python Streamlit untuk buku praktikum 12 bab**  
+Studi kasus: **Prediksi Nasabah Berlangganan Deposito Berjangka**  
+Data bawaan: **1.000 nasabah simulasi**, bukan data pribadi nasabah sesungguhnya.
 
-## Isi aplikasi dan pemetaan bab buku
+## Fitur aplikasi dan urutan bab
 
-| Tab | Bab buku | Fitur utama |
+| Tab | Bab | Praktikum |
 |---|---|---|
-| 1 · Dataset | Bab 1 | Melihat semua 1.000 observasi, ringkasan kelas, kamus variabel, unggah data dan unduh dataset |
-| 2 · Pemilihan Variabel | Bab 2 | Menentukan Y biner dan satu atau lebih variabel X, serta melihat distribusi target |
-| 3 · Data Splitting | Bab 3 | Persentase training/testing (50–90%), random seed, stratifikasi, hasil dua tabel, ekspor **dua Excel terpisah** |
-| 4 · Probabilitas & Klasifikasi | Bab 4 | Menampilkan koefisien dan persamaan lengkap, menghitung z dan probabilitas sigmoid, pengaturan threshold, klasifikasi, kontribusi setiap variabel, ekspor Excel |
-| 5 · Evaluasi Model | Bab 5 | Mengukur Accuracy, Precision, Recall, Specificity, F1-score, ROC-AUC, confusion matrix, dan unduh hasil testing |
+| 1. Dataset | 1 | Membaca seluruh dataset dan mengenal kolom, nilai, tipe data |
+| 2. Variabel | 2 | Memilih target Y dan prediktor X |
+| 3. Splitting | 3 | Training/testing, seed, stratifikasi, ekspor dua file Excel |
+| 4. Probabilitas | 4 | Koefisien, persamaan lengkap, nilai z, sigmoid, klasifikasi satu nasabah |
+| 5. Prediksi Training | 5 | **800 data training:** semua variabel asli, ID, Y aktual, z, P(Y=0), P(Y=1), Y prediksi, status benar/salah; unduh Excel |
+| 6. Prediksi Testing | 6 | **200 data testing:** tabel prediksi lengkap tanpa melatih ulang model; unduh Excel |
+| 7. Confusion Matrix | 7 | TN, FP, FN, TP dan interpretasi; unduh Excel |
+| 8. Accuracy | 8 | Rumus, substitusi jumlah observasi, dan interpretasi |
+| 9. Recall / Sensitivity | 9 | Rumus, substitusi, dan interpretasi |
+| 10. Specificity | 10 | Rumus, substitusi, dan interpretasi |
+| 11. Precision & F1-score | 11 | Dua metrik, rumus dan substitusi, interpretasi |
+| 12. ROC & AUC | 12 | Kurva ROC, ROC-AUC, titik operasi threshold 0.5, unduh titik ROC ke Excel |
 
-## Instalasi dan menjalankan (Windows, Mac, Linux)
+**Tema default:** Dark Mode, di `.streamlit/config.toml`. Tidak ada branding STATCAL ONLINE.
 
-1. Ekstrak ZIP ke folder kerja, **jangan pisahkan `app.py`, `ml_core.py`, dan file CSV**.
-2. Pastikan Python 3.10 atau lebih baru terpasang.
-3. Buka terminal (Command Prompt / PowerShell / VS Code Terminal) di folder tersebut.
-4. Jalankan perintah:
+## Instalasi
+
+Gunakan **Python 3.10 atau lebih baru**. Ekstrak ZIP, kemudian dari direktori folder aplikasi jalankan:
 
 ```bash
 python -m pip install -r requirements.txt
 python -m streamlit run app.py
 ```
 
-5. Akses alamat lokal yang muncul, umumnya `http://localhost:8501`.
+Aplikasi biasanya tersedia di `http://localhost:8501`.
 
-Untuk menjalankan di Streamlit Community Cloud, unggah isi folder ke GitHub, kemudian pilih `app.py` sebagai entry point dan pastikan `requirements.txt` serta dataset CSV berada di repository yang sama.
+## Pengaturan default sesuai buku
 
-## Konfigurasi baku sesuai contoh buku
+- Target: `Berlangganan_Deposito`, `0 = Tidak`, `1 = Ya`.
+- Prediktor: `Usia`, `Penghasilan_Bulanan`, `Saldo_Tabungan`, `Pekerjaan`, `Memiliki_Pinjaman`, `Pernah_Dihubungi`.
+- Training = 80% (800 observasi); testing = 20% (200 observasi).
+- Random seed = **42**; stratified splitting = **aktif**.
+- Model: `LogisticRegression(C=1.0, solver='lbfgs', max_iter=5000)` dengan regularisasi L2.
+- Encoding pekerjaan: Karyawan kategori referensi; 3 dummy lainnya. Ya=1 dan Tidak=0 untuk kedua prediktor biner.
+- Penghasilan dan saldo diubah ke satuan **juta rupiah**. ID tidak menjadi prediktor.
+- **Threshold evaluasi Bab 5–11 dan titik operasi Bab 12 adalah 0.50.** Slider threshold pada Bab 4 hanya untuk eksperimen prediksi satu nasabah.
+- Testing hanya digunakan setelah training selesai, bukan untuk `fit()` model.
 
-- Variabel dependen: `Berlangganan_Deposito` (0 = Tidak, 1 = Ya).
-- Variabel independen: keenam prediktor (`Usia`, `Penghasilan_Bulanan`, `Saldo_Tabungan`, `Pekerjaan`, `Memiliki_Pinjaman`, `Pernah_Dihubungi`).
-- Training = **80% (800 nasabah)**, testing = **20% (200 nasabah)**.
-- Random seed = **42**.
-- Stratified splitting = **Ya**, dengan distribusi kelas pada training **549 kelas 0 + 251 kelas 1** dan testing **137 kelas 0 + 63 kelas 1**.
-- Model = `sklearn.linear_model.LogisticRegression(C=1.0, solver="lbfgs", max_iter=5000)` dengan regularisasi L2, threshold prediksi 0.50.
-- Pengkodean tetap (tidak belajar dari testing): `Pekerjaan` menjadi 3 dummy (referensi **Karyawan**), `Ya` = 1, `Tidak` = 0. Penghasilan dan saldo dibagi 1.000.000 sehingga koefisien berlaku untuk satuan **juta rupiah**.
-- Contoh nasabah: usia 45, penghasilan Rp10.000.000, saldo Rp50.000.000, PNS, pinjaman Tidak, pernah dihubungi Ya. Dengan versi paket yang digunakan untuk pengujian, nilai **z = 0.758880**, **P(Y=1) = 0.681111** (68.11%), prediksi **Y=1**.
+### Angka yang menjadi acuan pada pembagian default
 
-**Penting:** beberapa versi `scikit-learn`/metode optimisasi dapat menghasilkan selisih kecil pada digit koefisien terakhir. Aplikasi selalu menampilkan hasil **model yang aktif**, menggunakan koefisien dengan presisi penuh. Karena itu, salin angka pada aplikasi ke naskah buku setelah menentukan dan mempertahankan satu versi perangkat lunak.
+- Distribusi training: 549 kelas 0, 251 kelas 1.
+- Distribusi testing: 137 kelas 0, 63 kelas 1.
+- Confusion matrix: TN=125, FP=12, FN=38, TP=25.
+- Accuracy=75.00%; Precision=67.57%; Recall=39.68%; Specificity=91.24%; F1-score=0.5000.
+- **ROC-AUC dihitung langsung dari probabilitas model aktif**. Nilainya dapat sedikit berbeda antarversi scikit-learn (contoh lingkungan uji: 0.7585). Jika hasil aplikasi yang sudah dideploy berbeda sedikit dengan gambar buku lama, gunakan satu versi environment dan perbarui gambar/nilai buku dari aplikasi final.
 
-## Memahami pengaruh pengaturan
+## Cara aplikasi menjaga konsistensi
 
-- Saat pilihan X, Y, training%, atau random seed diubah, model pada Tab 4 dan Tab 5 otomatis menggunakan data training baru.
-- ID nasabah hanya disertakan pada tabel/Excel untuk penelusuran; ID **tidak** dimasukkan ke model.
-- Jika memilih Y selain `Berlangganan_Deposito`, label klasifikasi merujuk pada Y yang baru, bukan lagi deposito.
-- `Stratified splitting` menjaga proporsi kelas Y di kedua bagian sedekat mungkin.
-- Aplikasi memisahkan testing sebelum melatih model. Encoding dan konversi satuan menggunakan aturan yang sudah ditetapkan, tidak menghitung parameter dari testing.
-- Evaluasi Tab 5 memakai threshold 0.50; slider threshold di Tab 4 hanya untuk ilustrasi prediksi nasabah baru.
+1. Tab 3 membagi data dengan indeks training dan testing yang tidak saling tumpang tindih.
+2. Model hanya di-`fit` pada training. Semua prediksi pada Bab 4–12 memakai objek model aktif yang sama pada satu eksekusi aplikasi.
+3. Tab 5 menghitung hasil probabilitas/prediksi semua training. Tab 6 menghitung hasil probabilitas/prediksi semua testing.
+4. Bab 7–11 menghitung metrik pada prediksi testing dengan threshold tetap 0.50.
+5. ROC-AUC pada Bab 12 berasal dari **probabilitas testing**, bukan dari satu confusion matrix.
+6. Mengubah seed, rasio split, Y, atau X akan menghasilkan model baru dan menyegarkan hasil semua tab berikutnya. Hasil default pada buku baru berlaku saat pengaturan default digunakan.
 
-## Catatan untuk buku praktikum
+> Kinerja pada training bukan evaluasi generalisasi. Jangan memakai data testing untuk tuning, memilih prediktor, atau mengoptimalkan threshold lalu menyebut hasil tersebut sebagai estimasi final yang independen. Lakukan validasi atau cross-validation di data training jika ingin optimasi.
 
-Dataset **sepenuhnya sintetis**. Pola yang dipelajari model bukan fakta empiris bank. Evaluasi pada data testing mengukur kinerja pada data simulasi yang disisihkan, bukan kinerja di bank nyata.
+## Upload kode ke GitHub / Streamlit Community Cloud
 
-Aplikasi **belum** melakukan tuning atau pemilihan hyperparameter, cross-validation, dan penanganan missing values. Karena dataset asli telah dibersihkan dan disimulasikan tanpa nilai kosong, validasi akan menolak unggahan yang tidak memenuhi format dataset buku. Untuk analisis data riil, tambahkan preprocessing dan validasi yang sesuai.
+Unggah **isi folder** V3 ke akar (root) repository. Untuk aplikasi lama `ml-reglog-1.streamlit.app`, file yang harus diperbarui terutama `app.py`, `ml_core.py`, `requirements.txt`, dan **`.streamlit/config.toml`**. Simpan CSV default di root. `app.py` tetap menjadi entry point.
 
-## Struktur file
+Jika repo GitHub memiliki commit baru yang tidak ada di lokal, lakukan commit lokal lalu `git pull --rebase origin master` dan `git push origin master` (bila cabang utamanya `master`). Hindari `--force`.
 
-```
-ML_Regresi_Logistik_Biner_Streamlit_V2/
-├── app.py
-├── ml_core.py
-├── requirements.txt
-├── README.md
-├── .streamlit/config.toml
-├── Simulasi_1000_Nasabah_Regresi_Logistik_Biner.csv
-├── Simulasi_1000_Nasabah_Regresi_Logistik_Biner.xlsx
-└── tests/test_ml_core.py
-```
-
-**Menjalankan tes komputasi (opsional):**
+## Pengujian
 
 ```bash
 python -m pip install pytest
 python -m pytest -q tests
 ```
 
-## Tampilan gelap dan judul aplikasi (Versi 2)
+File `tests/test_prediction_tables.py` mengecek apakah indeks, ID, label aktual, probabilitas, hasil prediksi, status benar/salah, dan seluruh metrik evaluasi saling sesuai. Pengujian komputasi tidak sama dengan pengujian antarmuka di browser.
 
-Aplikasi menggunakan mode **gelap sebagai tampilan bawaan**, diatur melalui file `.streamlit/config.toml` pada `[theme] base = "dark"`. Warna latar, sidebar, teks, dan grafik ROC sudah diselaraskan. Judul aplikasi adalah **Machine Learning: Regresi Logistik Biner**; tidak ada lagi label merek lama dalam antarmuka.
+## Isi folder
 
-**Saat memperbarui aplikasi yang sudah online di Streamlit Community Cloud:** ganti file `app.py` dan unggah juga folder tersembunyi `.streamlit/config.toml` pada akar repository. Jangan mengunggah file konfigurasi di luar folder `.streamlit`. Setelah commit, redeploy atau reboot aplikasi jika perlu, lalu refresh browser. Pengaturan tema yang pernah dipilih manual di browser dapat memengaruhi tampilan; pilih opsi tema gelap bila diperlukan.
-
-Alur lima tab, hasil analisis, dataset, pengaturan training/testing, dan fitur ekspor tetap sama seperti versi sebelumnya.
+```text
+ML_Regresi_Logistik_Biner_Streamlit_V3/
+├── app.py
+├── ml_core.py
+├── requirements.txt
+├── README.md
+├── .streamlit/
+│   └── config.toml
+├── Simulasi_1000_Nasabah_Regresi_Logistik_Biner.csv
+├── Simulasi_1000_Nasabah_Regresi_Logistik_Biner.xlsx
+└── tests/
+    ├── test_ml_core.py
+    └── test_prediction_tables.py
+```

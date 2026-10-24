@@ -199,6 +199,39 @@ def predict_single(trained: TrainedModel, values: dict, selected: Sequence[str],
     return x, contribution, z, prob, int(prob >= threshold)
 
 
+def prediction_table(
+    trained: TrainedModel,
+    original_df: pd.DataFrame,
+    original_positions: Sequence[int],
+    subset: str,
+    threshold: float = 0.5,
+) -> pd.DataFrame:
+    """Prediksi berurutan sesuai split, dengan ID dan seluruh X/Y asli.
+
+    Tidak ada training ulang dan tidak ada referensi label testing saat prediksi.
+    Kelas aktual hanya dipakai untuk menilai kecocokan setelah prediksi.
+    """
+    if subset not in ("train", "test"):
+        raise ValueError("subset harus 'train' atau 'test'.")
+    if not 0 < threshold < 1:
+        raise ValueError("Threshold harus di antara 0 dan 1.")
+    X = trained.x_train if subset == "train" else trained.x_test
+    y = trained.y_train if subset == "train" else trained.y_test
+    if len(original_positions) != len(X):
+        raise ValueError("Jumlah indeks asal tidak sesuai dengan data model.")
+    out = original_df.iloc[original_positions].reset_index(drop=True).copy()
+    z = trained.model.decision_function(X)
+    p = trained.model.predict_proba(X)[:, 1]
+    yhat = (p >= threshold).astype(int)
+    out["Y_Aktual"] = y.to_numpy(dtype=int)
+    out["Nilai_z"] = z
+    out["Probabilitas_Y0"] = 1 - p
+    out["Probabilitas_Y1"] = p
+    out["Y_Prediksi"] = yhat
+    out["Status_Prediksi"] = np.where(out["Y_Aktual"] == out["Y_Prediksi"], "Benar", "Salah")
+    return out
+
+
 def evaluate_model(trained: TrainedModel, threshold: float = 0.5) -> dict:
     p = trained.model.predict_proba(trained.x_test)[:, 1]
     pred = (p >= threshold).astype(int)
