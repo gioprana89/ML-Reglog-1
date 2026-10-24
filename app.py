@@ -1,4 +1,4 @@
-"""STATCAL - Praktikum Machine Learning: Regresi Logistik Biner.
+"""Buku Praktikum Machine Learning: Regresi Logistik Biner.
 
 Alur buku:
  Tab 1 Bab 1: Dataset
@@ -41,8 +41,8 @@ DATA_CSV = BASE_DIR / "Simulasi_1000_Nasabah_Regresi_Logistik_Biner.csv"
 DATA_XLSX = BASE_DIR / "Simulasi_1000_Nasabah_Regresi_Logistik_Biner.xlsx"
 
 st.set_page_config(
-    page_title="STATCAL | Praktikum Regresi Logistik Biner",
-    page_icon="📘",
+    page_title="Machine Learning | Regresi Logistik Biner",
+    page_icon="🧠",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -50,14 +50,21 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+      /* Tema utama didefinisikan di .streamlit/config.toml.
+         Warna khusus berikut selaras dengan dark mode. */
       .block-container {padding-top: 2rem; max-width: 1380px;}
-      div[data-testid="stMetric"] {background: #f4f7fb; border: 1px solid #e4eaf3;
-         padding: 14px 16px; border-radius: 12px;}
-      div[data-testid="stMetricLabel"] {color:#46566e;}
+      div[data-testid="stMetric"] {
+        background: #172239;
+        border: 1px solid #2A3B56;
+        padding: 14px 16px;
+        border-radius: 12px;
+      }
+      div[data-testid="stMetricLabel"] {color: #B6C5DA;}
+      div[data-testid="stMetricValue"] {color: #F2F6FF;}
       div[data-testid="stTabs"] button {font-weight: 600;}
-      .hero-caption {color:#5e6d81; font-size:0.96rem; margin-top:-8px; margin-bottom:16px;}
-      .step-label {color:#155bad; letter-spacing:.09em; font-size:.76rem; font-weight:800;}
-      div[data-testid="stDownloadButton"] button {border-radius:9px;}
+      .hero-caption {color: #ACBCD2; font-size: 0.98rem; margin-top: -8px; margin-bottom: 18px;}
+      .step-label {color: #8FC5FF; letter-spacing: .1em; font-size: .78rem; font-weight: 800;}
+      div[data-testid="stDownloadButton"] button {border-radius: 9px;}
     </style>
     """,
     unsafe_allow_html=True,
@@ -184,11 +191,16 @@ def show_value_controls(selected_features: list[str]) -> dict:
 
 
 def main():
-    st.markdown('<div class="step-label">STATCAL · MACHINE LEARNING BERBASIS PRAKTIK</div>', unsafe_allow_html=True)
-    st.title("Regresi Logistik Biner dengan Python Streamlit")
     st.markdown(
-        '<div class="hero-caption">Studi kasus: prediksi keputusan nasabah berlangganan deposito berjangka · '
-        'Dataset simulasi 1.000 nasabah · Alur buku Bab 1–5</div>', unsafe_allow_html=True
+        '<div class="step-label">BUKU PRAKTIKUM · MACHINE LEARNING</div>',
+        unsafe_allow_html=True,
+    )
+    st.title("Machine Learning: Regresi Logistik Biner")
+    st.markdown(
+        '<div class="hero-caption">Praktik klasifikasi biner menggunakan Python Streamlit · '
+        'Studi kasus: prediksi nasabah berlangganan deposito berjangka · '
+        'Dataset simulasi 1.000 nasabah</div>',
+        unsafe_allow_html=True,
     )
 
     st.sidebar.header("📘 Panduan Praktikum")
@@ -527,11 +539,30 @@ def main():
             st.subheader("Kurva ROC")
             if "fpr" in result:
                 fig, ax = plt.subplots(figsize=(5.8, 3.8))
-                ax.plot(result["fpr"], result["tpr"], linewidth=2.2, label=f'AUC = {result["roc_auc"]:.4f}')
-                ax.plot([0, 1], [0, 1], linestyle="--", color="gray", label="Klasifikasi acak")
-                ax.set(xlabel="False Positive Rate", ylabel="True Positive Rate", xlim=(0, 1), ylim=(0, 1))
-                ax.legend(loc="lower right")
-                ax.grid(alpha=0.2)
+                fig.patch.set_facecolor("#0B1220")
+                ax.set_facecolor("#172239")
+                ax.plot(
+                    result["fpr"], result["tpr"], linewidth=2.2,
+                    color="#63B3FF", label=f'AUC = {result["roc_auc"]:.4f}',
+                )
+                ax.plot(
+                    [0, 1], [0, 1], linestyle="--", color="#AAB9CC",
+                    label="Klasifikasi acak",
+                )
+                ax.set(
+                    xlabel="False Positive Rate", ylabel="True Positive Rate",
+                    xlim=(0, 1), ylim=(0, 1),
+                )
+                ax.tick_params(colors="#D8E6F6")
+                ax.xaxis.label.set_color("#E6EDF7")
+                ax.yaxis.label.set_color("#E6EDF7")
+                for spine in ax.spines.values():
+                    spine.set_color("#405471")
+                ax.legend(
+                    loc="lower right", facecolor="#172239",
+                    edgecolor="#405471", labelcolor="#E6EDF7",
+                )
+                ax.grid(alpha=0.22, color="#899BB6")
                 st.pyplot(fig, use_container_width=True)
                 plt.close(fig)
             else:
@@ -560,8 +591,8 @@ def main():
 
     st.divider()
     st.caption(
-        "STATCAL · Aplikasi pembelajaran Machine Learning — Regresi Logistik Biner · "
-        "Data simulasi, bukan data bank sebenarnya."
+        "Buku Praktikum Machine Learning — Regresi Logistik Biner · "
+        "Data simulasi untuk pembelajaran, bukan data nasabah bank sebenarnya."
     )
 
 

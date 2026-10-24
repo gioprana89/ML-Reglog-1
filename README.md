@@ -1,4 +1,4 @@
-# STATCAL — Praktikum Machine Learning: Regresi Logistik Biner
+# Machine Learning — Regresi Logistik Biner (Python Streamlit)
 
 **Studi kasus:** Prediksi keputusan nasabah berlangganan deposito berjangka.  
 **Data:** 1.000 nasabah **simulasi**, seluruh variabel dalam Bahasa Indonesia.
@@ -60,7 +60,7 @@ Aplikasi **belum** melakukan tuning atau pemilihan hyperparameter, cross-validat
 ## Struktur file
 
 ```
-STATCAL_Regresi_Logistik_Biner_Streamlit/
+ML_Regresi_Logistik_Biner_Streamlit_V2/
 ├── app.py
 ├── ml_core.py
 ├── requirements.txt
@@ -77,3 +77,11 @@ STATCAL_Regresi_Logistik_Biner_Streamlit/
 python -m pip install pytest
 python -m pytest -q tests
 ```
+
+## Tampilan gelap dan judul aplikasi (Versi 2)
+
+Aplikasi menggunakan mode **gelap sebagai tampilan bawaan**, diatur melalui file `.streamlit/config.toml` pada `[theme] base = "dark"`. Warna latar, sidebar, teks, dan grafik ROC sudah diselaraskan. Judul aplikasi adalah **Machine Learning: Regresi Logistik Biner**; tidak ada lagi label merek lama dalam antarmuka.
+
+**Saat memperbarui aplikasi yang sudah online di Streamlit Community Cloud:** ganti file `app.py` dan unggah juga folder tersembunyi `.streamlit/config.toml` pada akar repository. Jangan mengunggah file konfigurasi di luar folder `.streamlit`. Setelah commit, redeploy atau reboot aplikasi jika perlu, lalu refresh browser. Pengaturan tema yang pernah dipilih manual di browser dapat memengaruhi tampilan; pilih opsi tema gelap bila diperlukan.
+
+Alur lima tab, hasil analisis, dataset, pengaturan training/testing, dan fitur ekspor tetap sama seperti versi sebelumnya.

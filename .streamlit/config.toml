@@ -1,8 +1,17 @@
+# Tema gelap menjadi tampilan bawaan aplikasi.
 [theme]
-primaryColor = "#1D64BE"
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F4F7FB"
-textColor = "#17233B"
+base = "dark"
+primaryColor = "#3279D5"
+backgroundColor = "#0B1220"
+secondaryBackgroundColor = "#172239"
+textColor = "#E6EDF7"
 font = "sans serif"
+
+[theme.sidebar]
+backgroundColor = "#101B2E"
+secondaryBackgroundColor = "#172239"
+textColor = "#E6EDF7"
+primaryColor = "#3279D5"
+
 [server]
 headless = true
